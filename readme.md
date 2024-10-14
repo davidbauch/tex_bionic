@@ -17,7 +17,6 @@ $$\text{So}\text{\textcolor{gray}{me}}\text{ te}\text{\textcolor{gray}{xt}}~\tex
 \directlua{dofile("bionic.lua")}
 
 % Bionic Command. You can change "percentage" to anything you want (between 0 and 100)
-% The ignore_list contains macros that are ignored by the lua processor
 \newcommand{\bionic}[1]{
   \directlua{
     local input = [[\detokenize{#1}]]
