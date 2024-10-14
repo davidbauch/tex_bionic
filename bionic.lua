@@ -1,83 +1,164 @@
-function size_of_word(input,start,to_match)
-    local s = 0
-    repeat
-        s = s + 1
-    until input:sub(start+s, start+s):match(to_match) or start+s >= #input
-    return s
-end
+function bionic_text(text, percentage, options)
+    local result = ""
+    local i = 1
+    local len = #text
 
-function size_of_macro(input, start, blacklist_words)
-    local to_match = "[}]"
-    -- Hardcode checks for custom macros
-    local function matches_ignore_list()
-        for _, word in ipairs(blacklist_words) do
-            if input:sub(start+1, start+#word) == word then
-                return true
+    -- Function to parse LaTeX commands and skip their content
+    local function parse_latex_command()
+        local start_i = i
+        if text:sub(i, i) ~= '\\' then
+            return nil
+        end
+        i = i + 1
+        -- Read command name
+        while i <= len and text:sub(i, i):match("%a") do
+            i = i + 1
+        end
+        -- Parse optional and mandatory arguments
+        local function parse_argument(open_char, close_char)
+            if text:sub(i, i) ~= open_char then
+                return
+            end
+            local depth = 1
+            i = i + 1
+            while i <= len do
+                local c = text:sub(i, i)
+                if c == open_char then
+                    depth = depth + 1
+                elseif c == close_char then
+                    depth = depth - 1
+                    if depth == 0 then
+                        i = i + 1
+                        return
+                    end
+                elseif c == '\\' then
+                    parse_latex_command()
+                else
+                    i = i + 1
+                end
             end
         end
-        return false
-    end
-
-    if matches_ignore_list() then
-        to_match = "[}%s]"
-    end
-        
-    local s = 0
-    repeat
-        s = s + 1
-    until input:sub(start + s, start + s):match(to_match) or start + s > #input -- and not input:sub(start + s, start + s):match("[:_,%.]") 
-    return s
-end
-
-function bionic_text(input, percentage, blacklist_words)
-  local result = ""
-  local i = 1
-  local current_mode = 0 -- 0 text, 1 math, 2 macro
-  
-  while i <= #input do
-    local c = input:sub(i, i)
-    if c == "$" then
-        current_mode = 1
-    elseif c == "\\" then
-        current_mode = 2
-    else
-        current_mode = 0
-    end
-    -- if the current char matches a whitespace, just print it and set current_mode to -1
-    if input:sub(i,i):match("%s") then
-        current_mode = -1
-        result = result .. input:sub(i,i)
-        i = i + 1
-    end
-
-    -- If the current mode is text, get the current word length, color it, and proceed
-    if current_mode == 0 then
-        total_size = size_of_word(input, i, "%s")
-        chars_to_format = math.floor(total_size * percentage/100)
-        -- If the size is 1 or less, only use bionicback. Else split
-        if total_size < 2 then
-            result = result .. "\\bionicback{" .. input:sub(i,i+total_size) .. "}"
-        else
-            -- Format the first half
-            result = result .. "\\bionicfront{" .. input:sub(i,i+chars_to_format) .. "}"
-            -- Format the second half
-            result = result .. "\\bionicback{" .. input:sub(i+chars_to_format+1,i+total_size) .. "}"
+        while i <= len do
+            local c = text:sub(i, i)
+            if c == '[' then
+                parse_argument('[', ']')
+            elseif c == '{' then
+                parse_argument('{', '}')
+            elseif c:match("%s") then
+                i = i + 1
+            else
+                break
+            end
         end
-        i = i + total_size + 1
-        
-    -- If the current mode is math, wait until we find the finishing $
-    elseif current_mode == 1 then
-        total_size = size_of_word(input,i,"[$]")
-        result = result .. input:sub(i,i+total_size)
-        i = i + total_size + 1
-        
-    -- If the current mode is macro, wait until either a real space (so no :_.,) is matched or a "}"
-    elseif current_mode == 2 then
-        total_size = size_of_macro(input, i, blacklist_words)
-        result = result .. input:sub(i,i+total_size)
-        i = i + total_size + 1
+        return text:sub(start_i, i - 1)
     end
-    
-  end
-  return result
+
+    -- Function to parse math environments
+    local function parse_math_environment()
+        local start_i = i
+        if text:sub(i, i+1) == "\\(" then
+            i = i + 2
+            while i <= len do
+                if text:sub(i, i+1) == "\\)" then
+                    i = i + 2
+                    break
+                else
+                    i = i + 1
+                end
+            end
+        elseif text:sub(i, i+1) == "\\[" then
+            i = i + 2
+            while i <= len do
+                if text:sub(i, i+1) == "\\]" then
+                    i = i + 2
+                    break
+                else
+                    i = i + 1
+                end
+            end
+        elseif text:sub(i, i) == "$" then
+            local delimiter = "$"
+            if text:sub(i+1, i+1) == "$" then
+                delimiter = "$$"
+                i = i + 2
+            else
+                i = i + 1
+            end
+            while i <= len do
+                if text:sub(i, i+#delimiter-1) == delimiter then
+                    i = i + #delimiter
+                    break
+                elseif text:sub(i, i) == "\\" then
+                    parse_latex_command()
+                else
+                    i = i + 1
+                end
+            end
+        end
+        return text:sub(start_i, i - 1)
+    end
+
+    -- Function to process a word and apply bionic formatting
+    local function process_word(word)
+        local len = #word
+        local first_part_length
+        if word:sub(1,1):match("%u") then
+            first_part_length = 2
+        else
+            first_part_length = math.ceil(len * percentage / 100)
+            if first_part_length < 1 then
+                first_part_length = 1
+            end
+        end
+        if first_part_length > len then
+            first_part_length = len
+        end
+        local first_part = word:sub(1, first_part_length)
+        local second_part = word:sub(first_part_length + 1)
+        local formatted_word = ""
+        if first_part ~= "" then
+            formatted_word = formatted_word .. "\\bf{" .. first_part .. "}"
+        end
+        if second_part ~= "" then
+            formatted_word = formatted_word .. "\\bb{" .. second_part .. "}"
+        end
+        return formatted_word
+    end
+
+    while i <= len do
+        local c = text:sub(i, i)
+        if c == "\\" then
+            -- Parse LaTeX command
+            local cmd = parse_latex_command()
+            if cmd then
+                result = result .. cmd
+            else
+                result = result .. c
+                i = i + 1
+            end
+        elseif c == "$" or text:sub(i, i+1) == "\\(" or text:sub(i, i+1) == "\\[" then
+            -- Parse math environment
+            local math_env = parse_math_environment()
+            if math_env then
+                result = result .. math_env
+            else
+                result = result .. c
+                i = i + 1
+            end
+        elseif c:match("%a") then
+            -- Word
+            local word = ""
+            while i <= len and text:sub(i, i):match("%a") do
+                word = word .. text:sub(i, i)
+                i = i + 1
+            end
+            result = result .. process_word(word)
+        else
+            -- Other characters
+            result = result .. c
+            i = i + 1
+        end
+    end
+
+    return result
 end
