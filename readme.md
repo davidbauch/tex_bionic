@@ -4,13 +4,14 @@ This luatex script formats simple text into a bionic reading format. In bionic r
 
 The resulting text will look like this: 
 
-$$\textbf{So}\text{me}~\textbf{te}\text{xt}~\textbf{i}\text{n}~\textbf{bi}\text{onic}~\textbf{form}\text{atting}.$$
+$$\text{So}\text{\textcolor{gray}{me}}~\text{te}\text{\textcolor{gray}{xt}}~\text{i}\text{\textcolor{gray}{n}}~\text{bi}\text{\textcolor{gray}{onic}}~\text{form}\text{\textcolor{gray}{atting}}.$$
 
-Requires LuaTex.
+> [!NOTE]
+> Requires LuaTex.
 
 ## TODOS
 
-- [] Rewrite the lua formatter to support arbitrary commands. Right now, a lot of nested commands will fail to format.
+- [ ] Rewrite the lua formatter to support arbitrary commands. Right now, a lot of nested commands will fail to format.
 
 # Usage
 
