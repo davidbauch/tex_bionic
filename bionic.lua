@@ -102,19 +102,20 @@ function bionic_text(text, percentage)
     local function process_word(word)
         local len = #word
         local first_part_length
-        if word:sub(1,1):match("%u") then
-            first_part_length = 2
-        else
-            first_part_length = math.ceil(len * percentage / 100)
-            if first_part_length < 1 then
-                first_part_length = 1
-            end
+        
+        -- Calculate the length of the first part of the word
+        first_part_length = math.ceil(len * percentage / 100)
+        if first_part_length < 1 then
+            first_part_length = 1
         end
+        -- If the first part is longer than the word, truncate it
         if first_part_length > len then
             first_part_length = len
         end
+        -- Extract Substrings
         local first_part = word:sub(1, first_part_length)
         local second_part = word:sub(first_part_length + 1)
+        -- Apply bionic formatting
         local formatted_word = ""
         if first_part ~= "" then
             formatted_word = formatted_word .. "\\bionicfront{" .. first_part .. "}"

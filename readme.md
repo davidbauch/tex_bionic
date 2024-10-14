@@ -6,6 +6,8 @@ The resulting text will look like this:
 
 $$\text{So}\text{\textcolor{gray}{me}}\text{ te}\text{\textcolor{gray}{xt}}~\text{ i}\text{\textcolor{gray}{n}}~\text{ bi}\text{\textcolor{gray}{onic}}~\text{ form}\text{\textcolor{gray}{atting}}.$$
 
+Run 'lua test.lua -p' to print some examples.
+
 > [!NOTE]
 > Requires LuaTex.
 

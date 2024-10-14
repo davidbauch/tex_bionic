@@ -23,14 +23,19 @@ expected_result = {
 -- execute bionic_text on example_text
 results = {}
 for i, text in ipairs(example_text) do
-    results[i] = bionic_text(text, 30, {})
+    results[i] = bionic_text(text, 30)
 end
 
+-- if argv[1] is "print", print results
 -- compare results to expected_result
 for i, result in ipairs(results) do
-    if result ~= expected_result[i] then
-        print("Test failed on example_text[" .. i .. "]. Expected: '" .. expected_result[i] .. "' Got: '" .. result .. "'")
-    else
-        print("Test passed on example_text[" .. i .. "]")
+        if arg[1] == "-p" then
+            print("Transformed text[" .. i .. "]: " .. result)
+        else
+            if result ~= expected_result[i] then
+                print("Test failed on example_text[" .. i .. "]. Expected: '" .. expected_result[i] .. "' Got: '" .. result .. "'")
+            else
+                print("Test passed on example_text[" .. i .. "]")
+            end
+        end
     end
-end
