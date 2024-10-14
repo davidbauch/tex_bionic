@@ -38,6 +38,10 @@ is not possible, because the simple lua script stops as soon as it finds a "}".
   }
 }
 
+% These commands define the formatting
+\newcommand{\bionicfront}[1]{\textbf{#1}}
+\newcommand{\bionicback}[1]{#1}
+
 ...
 
 \bionic{Some text in bionic formatting.}
