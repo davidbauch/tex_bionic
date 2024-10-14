@@ -8,9 +8,10 @@ $$\text{So}\text{\textcolor{gray}{me}}\text{ te}\text{\textcolor{gray}{xt}}~\tex
 
 Run 'lua test.lua -p' to print some examples.
 
+Here is an [Overleaf Example](https://www.overleaf.com/read/mxskhcgpkvhz#d40143) of the bionic formatting running on some lorem ipsum text.
+
 > [!NOTE]
 > Requires LuaTex.
-
 
 # Usage
 
