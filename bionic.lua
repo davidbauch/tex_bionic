@@ -1,4 +1,4 @@
-function bionic_text(text, percentage, options)
+function bionic_text(text, percentage)
     local result = ""
     local i = 1
     local len = #text
@@ -117,10 +117,10 @@ function bionic_text(text, percentage, options)
         local second_part = word:sub(first_part_length + 1)
         local formatted_word = ""
         if first_part ~= "" then
-            formatted_word = formatted_word .. "\\bf{" .. first_part .. "}"
+            formatted_word = formatted_word .. "\\bionicfront{" .. first_part .. "}"
         end
         if second_part ~= "" then
-            formatted_word = formatted_word .. "\\bb{" .. second_part .. "}"
+            formatted_word = formatted_word .. "\\bionicback{" .. second_part .. "}"
         end
         return formatted_word
     end

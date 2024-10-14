@@ -7,16 +7,18 @@ example_text = {
                 "Command \\other[test]{argument}. Next.",
                 "Math Environment: $\\frac{1}{2}$. Next.",
                 "Command: \\text{a}{bb}{ccc}. Next. Hereissomeotherlong word. \\andsomecommand: Next.",
+                "\\camelcamelcamel and \\othercamel{a}[bb]{ccc}. Next. AND Math: $a^2+b^2=c^2$ Holy Moly. Next."
             }
 
 expected_result = {
-                "\\bf{He}\\bb{llo} \\bf{th}\\bb{is} \\bf{i}\\bb{s} \\bf{so}\\bb{me} \\bf{exa}\\bb{mple} \\bf{te}\\bb{xt}.",
-                "\\bf{Co}\\bb{mmand} \\command. \\bf{Ne}\\bb{xt}",
-                "\\bf{Co}\\bb{mmand} \\multiple{test}{a}. \\bf{Ne}\\bb{xt}",
-                "\\bf{Co}\\bb{mmand} \\other[test]{argument}. \\bf{Ne}\\bb{xt}.",
-                "\\bf{Ma}\\bb{th} \\bf{En}\\bb{vironment}: $\\frac{1}{2}$. \\bf{Ne}\\bb{xt}.",
-                "\\bf{Co}\\bb{mmand}: \\text{a}{bb}{ccc}. \\bf{Ne}\\bb{xt}. \\bf{He}\\bb{reissomeotherlong} \\bf{wo}\\bb{rd}. \\andsomecommand: \\bf{Ne}\\bb{xt}.",
-}
+                "\\bionicfront{He}\\bionicback{llo} \\bionicfront{th}\\bionicback{is} \\bionicfront{i}\\bionicback{s} \\bionicfront{so}\\bionicback{me} \\bionicfront{exa}\\bionicback{mple} \\bionicfront{te}\\bionicback{xt}.",
+                "\\bionicfront{Co}\\bionicback{mmand} \\command. \\bionicfront{Ne}\\bionicback{xt}",
+                "\\bionicfront{Co}\\bionicback{mmand} \\multiple{test}{a}. \\bionicfront{Ne}\\bionicback{xt}",
+                "\\bionicfront{Co}\\bionicback{mmand} \\other[test]{argument}. \\bionicfront{Ne}\\bionicback{xt}.",
+                "\\bionicfront{Ma}\\bionicback{th} \\bionicfront{En}\\bionicback{vironment}: $\\frac{1}{2}$. \\bionicfront{Ne}\\bionicback{xt}.",
+                "\\bionicfront{Co}\\bionicback{mmand}: \\text{a}{bb}{ccc}. \\bionicfront{Ne}\\bionicback{xt}. \\bionicfront{He}\\bionicback{reissomeotherlong} \\bionicfront{wo}\\bionicback{rd}. \\andsomecommand: \\bionicfront{Ne}\\bionicback{xt}.",
+                "\\camelcamelcamel \\bionicfront{a}\\bionicback{nd} \\othercamel{a}[bb]{ccc}. \\bionicfront{Ne}\\bionicback{xt}. \\bionicfront{AN}\\bionicback{D} \\bionicfront{Ma}\\bionicback{th}: $a^2+b^2=c^2$ \\bionicfront{Ho}\\bionicback{ly} \\bionicfront{Mo}\\bionicback{ly}. \\bionicfront{Ne}\\bionicback{xt}."
+            }
 
 -- execute bionic_text on example_text
 results = {}
