@@ -2,7 +2,9 @@
 
 This luatex script formats simple text into a bionic reading format. In bionic reading, the beginning of the words in text are emphasized, significantly increasing reading performance.
 
-The resulting text will look like this: $\bold{So}\text{me}~\bold{te}\text{xt}~\bold{i}\text{n}~\bold{bi}\text{onic}~\bold{form}\text{atting}.$
+The resulting text will look like this: 
+
+$$\bold{So}\text{me}~\bold{te}\text{xt}~\bold{i}\text{n}~\bold{bi}\text{onic}~\bold{form}\text{atting}.$$
 
 # Usage
 
