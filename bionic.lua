@@ -23,28 +23,32 @@ function bionic_text(text, percentage)
             i = i + 1
             while i <= len do
                 local c = text:sub(i, i)
-                if c == open_char then
+                if c == '\\' then
+                    -- Recursively parse nested commands
+                    parse_latex_command()
+                elseif c == open_char then
                     depth = depth + 1
+                    i = i + 1
                 elseif c == close_char then
                     depth = depth - 1
+                    i = i + 1
                     if depth == 0 then
-                        i = i + 1
                         return
                     end
-                elseif c == '\\' then
-                    parse_latex_command()
                 else
                     i = i + 1
                 end
             end
         end
+        -- Parse any number of optional and mandatory arguments
         while i <= len do
             local c = text:sub(i, i)
-            if c == '[' then
-                parse_argument('[', ']')
-            elseif c == '{' then
+            if c == '{' then
                 parse_argument('{', '}')
+            elseif c == '[' then
+                parse_argument('[', ']')
             elseif c:match("%s") then
+                -- Skip whitespace between arguments
                 i = i + 1
             else
                 break
@@ -63,7 +67,11 @@ function bionic_text(text, percentage)
                     i = i + 2
                     break
                 else
-                    i = i + 1
+                    if text:sub(i, i) == '\\' then
+                        parse_latex_command()
+                    else
+                        i = i + 1
+                    end
                 end
             end
         elseif text:sub(i, i+1) == "\\[" then
@@ -73,7 +81,11 @@ function bionic_text(text, percentage)
                     i = i + 2
                     break
                 else
-                    i = i + 1
+                    if text:sub(i, i) == '\\' then
+                        parse_latex_command()
+                    else
+                        i = i + 1
+                    end
                 end
             end
         elseif text:sub(i, i) == "$" then
@@ -88,7 +100,7 @@ function bionic_text(text, percentage)
                 if text:sub(i, i+#delimiter-1) == delimiter then
                     i = i + #delimiter
                     break
-                elseif text:sub(i, i) == "\\" then
+                elseif text:sub(i, i) == '\\' then
                     parse_latex_command()
                 else
                     i = i + 1
@@ -102,7 +114,7 @@ function bionic_text(text, percentage)
     local function process_word(word)
         local len = #word
         local first_part_length
-        
+
         -- Calculate the length of the first part of the word
         first_part_length = math.ceil(len * percentage / 100)
         if first_part_length < 1 then
